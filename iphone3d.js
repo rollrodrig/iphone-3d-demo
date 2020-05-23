@@ -65,7 +65,7 @@ function addDirecLight(name, position, intensity, scene, helper) {
     }
     return light;
 }
-var FILE_PATH = "/public/iphone/";
+var FILE_PATH = "public/iphone/";
 var FILE_NAME = "iphone.obj";
 var Y_ROTATION = 0;
 var Z_ROTATION = 65;
