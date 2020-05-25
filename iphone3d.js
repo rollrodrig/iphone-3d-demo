@@ -1,3 +1,22 @@
+/*========*/
+// CUSTOMIZATION VARIABLES
+var CANVAS_ID = "canvas"; // html canvas id container
+var FILE_PATH = "public/iphone/"; // path to 3d model
+var FILE_NAME = "iphone.obj"; // 3d model file name
+var Y_ROTATION = 120; //  rotate the camera on Y axis
+var Z_ROTATION = 85; //  rotate the camera on Z axis
+var DISTANCE = 300; // distance to the model
+var H_LIGHT_1 = [4, 2, 3, 1] // direction of the light: [x, y, z, intensity]
+var D_LIGHT_1 = [-5, 10, 8, 0.75] // direction of the light: [x, y, z, intensity]
+var D_LIGHT_2 = [5, 1, 2, 0.85] // direction of the light: [x, y, z, intensity]
+var BG_COLOR = [112, 78, 186] // background color: : [R, B, G]
+
+/*
+    DONT TOUCH ANYTHING BELOW THIS LINE
+    ===================================
+*/
+
+
 var Engine = BABYLON.Engine;
 var Scene = BABYLON.Scene;
 var ArcRotateCamera = BABYLON.ArcRotateCamera;
@@ -65,19 +84,16 @@ function addDirecLight(name, position, intensity, scene, helper) {
     }
     return light;
 }
-var FILE_PATH = "public/iphone/";
-var FILE_NAME = "iphone.obj";
-var Y_ROTATION = 0;
-var Z_ROTATION = 65;
-var DISTANCE = 2000;
-var H_LIGHT_1 = [4, 2, 3, 1]
-var D_LIGHT_1 = [-5, 10, 8, 0.75]
-var D_LIGHT_2 = [5, 1, 2, 0.85]
+function setBgColor(BG_COLOR) {
+    return new BABYLON.Color3(BG_COLOR[0]/255, BG_COLOR[1]/255, BG_COLOR[2]/255);
+}
 window.addEventListener('load', function () {
-    var canvas = getCanvas('canvas');
+    var canvas = getCanvas(CANVAS_ID);
     var engine = addEngine(canvas);
     var createScene = function() {
         var scene = addScene(engine);
+            scene.clearColor = setBgColor(BG_COLOR)
+            scene.useRightHandedSystem = true;
         var hlight = addHemiLight(
             "hemiLight",
             new Vector3(H_LIGHT_1[0], H_LIGHT_1[1], H_LIGHT_1[2]),
@@ -99,14 +115,18 @@ window.addEventListener('load', function () {
             scene,
             // true
         );
-        var b1 = addBox(scene, "b1", {});
+        var b1 = addBox(scene, "b1", {size: 0.1});
         var camera = addCamera(scene, canvas, Y_ROTATION, Z_ROTATION, DISTANCE);
             camera.attachControl(canvas, true);
-        // BABYLON.OBJFileLoader.MATERIAL_LOADING_FAILS_SILENTLY = true;
-        BABYLON.SceneLoader.ImportMesh("", FILE_PATH, FILE_NAME, scene, function (newMeshes) {
-            // Set the target of the camera to the first imported mesh
-            camera.target = newMeshes[0];
-        });
+        BABYLON.SceneLoader.showloadingscreen = false;
+        BABYLON.SceneLoader.ImportMesh("", FILE_PATH, FILE_NAME, scene, onModelLoaded, onModelProgress);
+        function onModelLoaded(newMeshes) {
+            console.log("model loaded")
+        }
+        function onModelProgress(newMeshes) {
+            console.log("loading model")
+        }
+
         return scene;
     }
     var scene = createScene();
