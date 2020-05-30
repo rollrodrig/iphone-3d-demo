@@ -121,6 +121,7 @@ window.addEventListener('load', function () {
         BABYLON.SceneLoader.showloadingscreen = false;
         BABYLON.SceneLoader.ImportMesh("", FILE_PATH, FILE_NAME, scene, onModelLoaded, onModelProgress);
         function onModelLoaded(newMeshes) {
+            console.log(newMeshes)
             console.log("model loaded")
         }
         function onModelProgress(newMeshes) {
